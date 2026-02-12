@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Valentine 💖</title>
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: 'Comic Sans MS', 'Poppins', sans-serif;
+    }
+
+    #musicContainer {
+    display: none;
+}
+
+    body {
+        margin: 0;
+        height: 100vh;
+        background: #ffe6eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+   .card {
+    background: white;
+    width: min(92vw, 420px);
+    padding: 28px 22px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,.1);
+    position: relative;
+}
+
+
+    h1 {
+        color: #ff5c8a;
+        margin-bottom: 10px;
+    }
+
+    p {
+        color: #555;
+        font-size: 16px;
+        min-height: 48px;
+    }
+
+   img {
+    width: min(65vw, 220px);
+    max-width: 100%;
+    margin: 18px 0;
+}
+
+
+    .buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+
+    button {
+    border: none;
+    padding: 14px 30px;
+    border-radius: 999px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+
+
+   #yes {
+    background: #3bd671;
+    color: white;
+}
+
+    #no {
+    background: #ff5c5c;
+    color: white;
+    transition: transform .25s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+
+    .big {
+        transform: translateX(-50%) scale(1.2);
+    }
+
+    .huge {
+        transform: translateX(-50%) scale(1.6);
+    }
+
+    .giant {
+        transform: translateX(-50%) scale(2.1);
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .gift {
+        font-size: 60px;
+        cursor: pointer;
+        animation: shake 1s infinite;
+    }
+
+    @keyframes shake {
+        0% { transform: rotate(0deg); }
+        25% { transform: rotate(3deg); }
+        50% { transform: rotate(0deg); }
+        75% { transform: rotate(-3deg); }
+        100% { transform: rotate(0deg); }
+    }
+
+    @media (max-width: 480px) {
+    h1 {
+        font-size: 22px;
+    }
+
+    p {
+        font-size: 16px;
+    }
+
+    .buttons {
+        height: 90px;
+    }
+}
+
+
+    .type {
+        white-space: pre-line;
+        text-align: left;
+        font-size: 15px;
+        color: #444;
+    }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h1 id="title">Hey Cutie!</h1>
+    <img id="img" src="https://media.tenor.com/76BaX0eo304AAAAi/kitty-kitty-heart.gif">
+    <p id="text">Will you be my Valentine?</p>
+
+    <div class="buttons" id="buttons">
+        <button id="yes">Yes</button>
+        <button id="no">No</button>
+    </div>
+</div>
+
+
+<script>
+
+    const audio = document.getElementById("bgm");
+let musicStarted = false;
+
+function startMusic() {
+    if (!musicStarted) {
+        audio.play().catch(() => {});
+        musicStarted = true;
+    }
+}
+
+document.addEventListener("click", startMusic, { once: true });
+
+const steps = [
+    {
+        title: "Wait…",
+        text: "Are you sure?",
+        img: "https://media1.tenor.com/m/4T2bUkC6DTwAAAAd/suspicious-look-suspicious-cat.gif"
+    },
+    {
+        title: "Wait…",
+        text: "Don’t do this to me :(",
+        img: "https://media1.tenor.com/m/1Hq1EY8_MXAAAAAd/m%C3%A8o-troll.gif"
+    },
+    {
+        title: "Wait…",
+        text: "You’re breaking my heart…",
+        img: "https://media1.tenor.com/m/IQ-IBiNbtL4AAAAd/fwayri.gif"
+    },
+    {
+        title: "Please?",
+        text: "You have no choice now! ❤️",
+        img: "https://media1.tenor.com/m/pdX9YTI4_eoAAAAd/cat-cat-with-tongue.gif"
+    }
+];
+
+let noCount = 0;
+let canEscape = false;
+
+
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
+const title = document.getElementById("title");
+const text = document.getElementById("text");
+const img = document.getElementById("img");
+const buttons = document.getElementById("buttons");
+
+no.addEventListener("click", (e) => {
+    if (noCount >= steps.length) return;
+
+    // 1. เปลี่ยนข้อความ + รูป
+    title.innerText = steps[noCount].title;
+    text.innerText = steps[noCount].text;
+    setGif(steps[noCount].img);
+
+    noCount++;
+
+    // 2. Yes โตขึ้น
+    if (noCount === 1) yes.classList.add("big");
+    if (noCount === 2) yes.classList.add("huge");
+    if (noCount === 3) yes.classList.add("giant");
+
+    // 3. No หนี + เล็กลง ทุกครั้ง
+    escapeNo();
+
+    // 4. ถ้าถึงหน้าสุดท้าย → ซ่อน No
+    if (noCount >= steps.length) {
+        no.style.display = "none";
+    }
+});
+
+
+no.addEventListener("touchstart", (e) => {
+    if (canEscape) {
+        e.preventDefault();
+        escapeNo();
+    }
+});
+
+
+yes.addEventListener("click", () => {
+    title.innerText = "Yay! Happy Valentine’s Day!";
+    img.src = "https://media1.tenor.com/m/uZyrE58rNaoAAAAd/falling-stars-falling-stars-cats.gif";
+    text.innerText = "I love you so much! ❤️";
+    buttons.innerHTML = "";
+
+    setTimeout(showGift, 3000);
+});
+
+function showGift() {
+    title.innerText = "But wait…";
+    img.classList.add("hidden");
+    text.innerHTML = `<div class="gift">🎁</div><p>Open the gift 🎀</p>`;
+
+    document.querySelector(".gift").onclick = openGift;
+}
+
+function openGift() {
+   window.location.href = "tree.html";
+}
+
+function setGif(src) {
+    img.src = "";
+    setTimeout(() => {
+        img.src = src;
+    }, 10);
+}
+
+
+function proceedNo() {
+    if (noCount < steps.length) {
+        title.innerText = steps[noCount].title;
+        text.innerText = steps[noCount].text;
+        setGif(steps[noCount].img);
+        noCount++;
+
+        if (noCount === 1) yes.classList.add("big");
+        if (noCount === 2) yes.classList.add("huge");
+        if (noCount === 3) yes.classList.add("giant");
+    }
+}
+
+function escapeNo() {
+    const x = Math.random() * 240 - 120;
+    const y = Math.random() * 60;
+    const scale = Math.max(0.35, 1 - noCount * 0.15);
+
+    no.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+}
+
+
+
+function typeWriter() {
+    const el = document.getElementById("type");
+    let i = 0;
+    const timer = setInterval(() => {
+        el.textContent += message[i];
+        i++;
+        if (i >= message.length) clearInterval(timer);
+    }, 40);
+}
+</script>
+
+
+
+</body>
+</html>
